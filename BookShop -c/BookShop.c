@@ -25,8 +25,9 @@ int main()
 {
 	int user_choice;
 	int i,j,choice,res,rec_count;
-	
+	int status;
 	FILE *fp;
+	FILE *FP_PTR;
 	
 	date id_srch;	
 	record new_record[SIZE];
@@ -38,6 +39,7 @@ int main()
 		printf("\t************** WELCOME TO THE BOOKSHOP *************\n");
 		printf("\n Press<1> to create entry for book");
 		printf("\n Press<2> to display on specific date");
+		printf("\n Press<3> to edit entry on specific date");
 		printf("\n Press<0> to exit");
 						
 		printf("\n\n Enter your choice? ");
@@ -83,7 +85,8 @@ int main()
 						
 						printf("\n Enter Date to search entries on (YYYY/MM/DD): ");
 						scanf("%d/%d/%d",&id_srch.year,&id_srch.month,&id_srch.day);
-					
+						
+						
 					
 					for(i=0;i<j-1;i++)
 					{
@@ -106,6 +109,56 @@ int main()
 						break;
 			
 			}
+			case 3:{
+					fp=fopen("test.bin","r");
+						fread(&new_record[0],sizeof(record),1,fp);
+						j=1;
+						
+						while(!feof(fp))
+						{
+
+							fread(&new_record[j],sizeof(record),1,fp);
+							j++;
+						
+						}
+						fclose(fp);
+						remove("test.bin");
+						
+						printf("\n Enter Date to edit entries on (YYYY/MM/DD): ");
+						scanf("%d/%d/%d",&id_srch.year,&id_srch.month,&id_srch.day);
+						
+						FP_PTR=fopen("temp.txt","w");
+						for(i=0;i<j-1;i++)
+						{
+							if((id_srch.year==new_record[i].payment.year) && (id_srch.month==new_record[i].payment.month) && (id_srch.day==new_record[i].payment.day))
+							{
+								printf("\nThe Records are:");
+								print(new_record[i]);
+								printf("Press any key to edit...");
+								getch();
+								read(&new_record[i]);
+								fwrite(&new_record[i],sizeof(record),1,FP_PTR);
+							
+							}
+							else{
+								fwrite(&new_record[i],sizeof(record),1,FP_PTR);
+							}
+						}
+							system("cls");
+					for(i=0;i<j-1;i++)
+					{
+								printf("\nThe Edited record(s) are:");
+								print(new_record[i]);
+								rec_count=1;
+							}
+		
+				fclose(FP_PTR);
+					rename("temp.txt","test.bin");
+					getch();
+						system("cls");
+				
+				break;
+			}
 			case 0:
 			{
 				printf("\n Program ended successfully :) ");	
@@ -119,9 +172,6 @@ int main()
 				}
 		}
 	}while(user_choice!=0);
-	
-	
-
 }
 
 
